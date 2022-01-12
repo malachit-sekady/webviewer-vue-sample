@@ -1,6 +1,5 @@
 <template>
   <div id="webviewer" ref="viewer" style="display: none"></div>
-  <!-- <div id="webviewer" ref="viewer"></div> -->
   <div>sup {{previewHeight}}</div>
   <input type="file" @change="handleFileChange"/>
   <canvas
@@ -11,7 +10,6 @@
 </template>
 
 <script>
-// import { ref, onMounted } from "vue";
 import WebViewer from "@pdftron/webviewer";
 
 export default {
@@ -25,14 +23,20 @@ export default {
     }
   },
   async mounted() {
+    let webviewerScript = document.createElement('script');
+    webviewerScript.setAttribute('src', 'webviewer/core/webviewer-core.min.js');
+    document.head.appendChild(webviewerScript);
     let path = `${process.env.BASE_URL}webviewer`;
     this.webviewer = await WebViewer({ path, initialDoc: "https://pdftron.s3.amazonaws.com/downloads/pl/demo-annotated.pdf"}, document.getElementById('webviewer'));
   },
   methods: {
     handleFileChange(event) {
       console.log('viewer ', this.webviewer);
+      console.log('core controls ', window.CoreControls);
       Array.from(event.target.files).map((javascriptFile) => {
-        this.webviewer.CoreControls.createDocument(javascriptFile).then((webviewerDoc) => {
+        // this.webviewer.CoreControls.createDocument(javascriptFile).then((webviewerDoc) => {
+        // window.Core.createDocument(javascriptFile).then((webviewerDoc) => {
+        window.CoreControls.createDocument(javascriptFile).then((webviewerDoc) => {
           webviewerDoc.loadCanvasAsync({
             pageNumber: 1,
             width: this.previewWidth,
